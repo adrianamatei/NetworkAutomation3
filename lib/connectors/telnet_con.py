@@ -3,10 +3,10 @@ import asyncio
 import telnetlib3
 
 HOST = '92.81.55.146'
-PORT = 5041  # replace with yours
+PORT = 5109  # replace with yours
 
 class TelnetConnection:
-    def _init_(self, host, port):
+    def __init__(self, host, port):
         self.host = host
         self.port = port
 

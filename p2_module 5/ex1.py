@@ -7,7 +7,7 @@ import telnetlib3
 from lib.connectors.telnet_con import TelnetConnection
 
 HOST = '92.81.55.146'
-PORT = 5109  # replace with yours
+PORT = 5109
 command = 'show running-config'
 hostname = "IOU1#"
 
