@@ -10,6 +10,11 @@ class TelnetConnection:
         self.host = host
         self.port = port
 
+
+    def __enter__(self):
+        return self
+
+
     async def connect_to_device(self):
         self.reader, self.writer = await telnetlib3.open_connection(self.host, self.port)
 
@@ -24,9 +29,17 @@ class TelnetConnection:
     async def read(self, n: int):
         return await self.reader.read(n)
 
-    def write(self, data: str):
+    async def write(self, data: str):
         self.writer.write(data)
 
-if __name__ == '_main_':
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.writer.close()
+
+if __name__ == '__main__':
     conn = TelnetConnection(HOST, PORT)
+    asyncio.run(conn.connect_to_device())
     conn.print_info()
+
+    '''with TelnetConnection(HOST, PORT) as conn:
+        asyncio.run(conn.connect_to_device())
+        conn.print_info()'''
