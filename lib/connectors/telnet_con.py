@@ -6,14 +6,12 @@ HOST = '92.81.55.146'
 PORT = 5109  # replace with yours
 
 class TelnetConnection:
-    def __init__(self, host, port):
+    def _init_(self, host, port):
         self.host = host
         self.port = port
 
-
-    def __enter__(self):
+    def _enter_(self):
         return self
-
 
     async def connect_to_device(self):
         self.reader, self.writer = await telnetlib3.open_connection(self.host, self.port)
@@ -29,17 +27,18 @@ class TelnetConnection:
     async def read(self, n: int):
         return await self.reader.read(n)
 
-    async def write(self, data: str):
+    def write(self, data: str):
         self.writer.write(data)
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.writer.close()
+    def _exit_(self, exc_type, exc_val, exc_tb):
+        self.write('\n')
 
 if __name__ == '__main__':
-    conn = TelnetConnection(HOST, PORT)
-    asyncio.run(conn.connect_to_device())
-    conn.print_info()
+    pass
+    # conn = TelnetConnection(HOST, PORT)
+    # asyncio.run(conn.connect_to_device())
+    # conn.print_info()
 
-    '''with TelnetConnection(HOST, PORT) as conn:
-        asyncio.run(conn.connect_to_device())
-        conn.print_info()'''
+    # with TelnetConnection(HOST, PORT) as conn:
+    #     asyncio.run(conn.connect_to_device())
+    #     conn.print_info()

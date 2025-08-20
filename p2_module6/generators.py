@@ -42,9 +42,9 @@ def prime_range(start, stop):
         i += 1
 gen = prime_range(2, 100)
 
+'''print(next(gen))
 print(next(gen))
-print(next(gen))
-print(next(gen))
+print(next(gen))'''
 
 try:
     while True:
