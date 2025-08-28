@@ -31,10 +31,10 @@ class TelnetConnection:
 
     def write(self, data: str):
         self.writer.write(data)
-
-    #ASTA de completat , plus de facut daca le avem pe amandoua simultan
-
     async def configure(self):
+
+        pass
+    '''async def configure(self):
         self.write('\n')
         await asyncio.sleep(1)
         result = await self.read(1000)
@@ -75,7 +75,7 @@ class TelnetConnection:
         self.write("end\n")
         await asyncio.sleep(1)
         self.write("write memory\n")
-        await asyncio.sleep(1)
+        await asyncio.sleep(1)'''
 
     async def close(self):
         pass
