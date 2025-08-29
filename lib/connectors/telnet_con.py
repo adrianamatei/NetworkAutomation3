@@ -32,6 +32,8 @@ class TelnetConnection:
 
     def write(self, data: str):
         self.writer.write(data)
+
+    #varianta de la clasa, pe wapp varianta mea
     async def configure(self, completed:Queue=None):
         self.write('')
         await asyncio.sleep(2)

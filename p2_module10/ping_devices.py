@@ -5,44 +5,50 @@
 #functia care va popula q si una care va da ping prin subprocess
 #trebuie sa i punem sa astepte un anumit timp
 
-import time
-import os
-from lib.connectors.telnet_con import TelnetConnection
 import asyncio
+import os
 from multiprocessing import Process, Queue
+from lib.connectors.telnet_con import TelnetConnection
 import subprocess
 
+HOST = '92.81.55.146'
+PORTS = [5120, 5029]
 
+PORTS_IPS = [
+    ("Ethernet0/0",        "192.168.200.3 255.255.255.0"),
+    ("GigabitEthernet0/0", "192.168.200.4 255.255.255.0"),
+]
 
-HOSTS = [('92.81.55.146', 5120), ('92.81.55.146', 5029)]
-CONNS = [TelnetConnection(host, port) for host, port in HOSTS]
+CONNS: list[TelnetConnection] = []
 
-async def producer(q, connections):
-    await asyncio.gather(*(con.connect() for con in connections))
-    for con in connections:
-        await con.configure(completed=q)
-    await asyncio.gather(*(con.close() for con in connections))
-    q.put(None)
+for port in PORTS:
+    CONNS.append(TelnetConnection(HOST, port))
 
+async def configure_all(queue: Queue):
+    await asyncio.gather(*(con.connect() for con in CONNS))
+    await asyncio.gather(*(con.configure(iface, ip, completed=queue) for con, (iface, ip) in zip(CONNS, PORTS_IPS)))
+    await asyncio.gather(*(con.close() for con in CONNS))
 
-def consumer(q):
-    while True:
-        ip = q.get()
-        if ip is None:
-            break
-        print(f"Pinging {ip}...")
-        try:
-            subprocess.run(["ping", ip], check=True, timeout=5)
-            print(f"{ip} este reachable")
-        except subprocess.CalledProcessError:
-            print(f"{ip} nu răspunde")
-    print(f"Consumer {os.getpid()} terminat")
+def ping_device(ip: str):
+    print(f"{os.getpid()} Pinging {ip} ")
+    subprocess.run(['ping', ip, '-c', '2'])
 
+def consumer(queue: Queue):
+    while not queue.empty():
+        msg = queue.get()
+        print("Got from queue:", msg)
+
+        ip = msg.split("-")[-1].strip().split()[0]
+        ping_device(ip)
+    print(f"Consumer {os.getpid()} done")
 
 
 if __name__ == "__main__":
     q = Queue()
-    p_consumer = Process(target=consumer, args=(q,))
-    p_consumer.start()
-    asyncio.run(producer(q, CONNS))
-    p_consumer.join()
+    asyncio.run(configure_all(q))
+    p1 = Process(target=consumer, args=(q,))
+    p2 = Process(target=consumer, args=(q,))
+    p1.start()
+    p2.start()
+    p1.join()
+    p2.join()
