@@ -38,9 +38,10 @@ def consumer(queue: Queue):
         msg = queue.get()
         print("Got from queue:", msg)
 
-        ip = msg.split("-")[-1].strip().split()[0]
+        ip = msg.split(":")[-1].strip()  # ia partea după ":"
         ping_device(ip)
     print(f"Consumer {os.getpid()} done")
+
 
 
 if __name__ == "__main__":

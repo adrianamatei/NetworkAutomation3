@@ -49,7 +49,7 @@ class TelnetConnection:
             await self.readuntil('Router(config-if)#')
             self.write('no shutdown\n')
             await self.readuntil('Router(config-if)#')
-            completed.put({"Router:192.168.200.3"})
+            completed.put("Router:192.168.200.3")
 
         elif 'IOU1#' in result:
             self.write('conf t\n')
@@ -60,7 +60,7 @@ class TelnetConnection:
             await self.readuntil('IOU1(config-if)#')
             self.write('no shutdown\n')
             await self.readuntil('IOU1(config-if)#')
-            completed.put({"IOU1:192.168.200.4"})
+            completed.put("IOU1:192.168.200.4")
 
     async def close(self):
         pass
