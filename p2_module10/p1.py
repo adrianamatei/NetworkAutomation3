@@ -9,6 +9,7 @@ import subprocess
 
 def add_routes(dest_ip, next_hop):
     subprocess.run(['ip', 'route', 'add', f'{dest_ip}/24', 'via', f'{next_hop}'])
+    #eu nu am nevoie de asta ca am deja adresa ip
 
 
 if __name__ == '__main__':

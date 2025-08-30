@@ -6,7 +6,7 @@ def get_long_words(text_var:str,length:int) ->list:
      return list(
          filter(
              lambda x:len(x) > length,
-             map(lambda _: _.string(",.;:"),text_var.split()),
+             map(lambda _: _.strip(",.;:"),text_var.split()),
          )
      )
 

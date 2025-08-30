@@ -26,7 +26,7 @@ for port in PORTS:
 
 async def configure_all(queue: Queue):
     await asyncio.gather(*(con.connect() for con in CONNS))
-    await asyncio.gather(*(con.configure(iface, ip, completed=queue) for con, (iface, ip) in zip(CONNS, PORTS_IPS)))
+    await asyncio.gather(*(con.configure(completed=queue) for con in CONNS))
     await asyncio.gather(*(con.close() for con in CONNS))
 
 def ping_device(ip: str):

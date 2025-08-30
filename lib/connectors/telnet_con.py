@@ -35,28 +35,30 @@ class TelnetConnection:
 
     #varianta de la clasa, pe wapp varianta mea
     async def configure(self, completed:Queue=None):
-        self.write('')
-        await asyncio.sleep(2)
+        self.write(' \n')
+        await asyncio.sleep(5)
         result = await self.read(3000)
-        if 'Router#' in result:
-            self.write('conf t')
+        if 'Router>' in result:
+            self.write('enable\n')
+            await self.readuntil('Router#')
+            self.write('conf t\n')
             await self.readuntil('Router(config)#')
-            self.write('interface g0/0')
+            self.write('interface g0/0\n')
             await self.readuntil('Router(config-if)#')
-            self.write('ip address 192.168.200.3 255.255.255.0')
+            self.write('ip address 192.168.200.3 255.255.255.0\n')
             await self.readuntil('Router(config-if)#')
-            self.write('no shutdown')
+            self.write('no shutdown\n')
             await self.readuntil('Router(config-if)#')
             completed.put({"Router:192.168.200.3"})
 
         elif 'IOU1#' in result:
-            self.write('conf t')
+            self.write('conf t\n')
             await self.readuntil('IOU1(config)#')
-            self.write('interface eth0/0')
+            self.write('interface eth0/0\n')
             await self.readuntil('IOU1(config-if)#')
-            self.write('ip address 192.168.200.4 255.255.255.0')
+            self.write('ip address 192.168.200.4 255.255.255.0\n')
             await self.readuntil('IOU1(config-if)#')
-            self.write('no shutdown')
+            self.write('no shutdown\n')
             await self.readuntil('IOU1(config-if)#')
             completed.put({"IOU1:192.168.200.4"})
 
