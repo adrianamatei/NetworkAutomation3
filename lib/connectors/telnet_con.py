@@ -33,6 +33,7 @@ class TelnetConnection:
     def write(self, data: str):
         self.writer.write(data)
 
+    #la tema3 cred ca am nevoie de varinata configure fara Queue
     #varianta de la clasa, pe wapp varianta mea
     async def configure(self, completed:Queue=None):
         self.write(' \n')
