@@ -21,10 +21,11 @@
 
 import asyncio
 from lib.connectors.telnet_conn_tema3 import TelnetConnection
+import os
 
 PORTS = [5120, 5121]
 HOST = '92.81.55.146'
-
+print(os.getcwd())
 CONNS = [TelnetConnection(HOST, port) for port in PORTS]
 
 PORT_FILE_MAP = {

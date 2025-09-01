@@ -41,25 +41,49 @@ class TelnetConnection:
         self.write('\n')
         await asyncio.sleep(1)
         result = await self.read(1000)
-        match = re.search(r'([\w\-\.:]+)(>|#)', result)
+
+        match = re.search(r'([^\s]+)(>|#)', result)
         if match:
             return match.group(0)
-        return None
+        else:
+            print(f"[WARNING] Prompt not detected in output: {result!r}")
+            return ">"  # fallback minim
+    # m am folosit de modulul 4
 
     #la tema3 cred ca am nevoie de varinata configure fara Queue
     async def configure(self, filename="output.txt"):
-        device_name = PORT_DEVICE_MAP[self.port]  # port -> nume device
+        device_name = PORT_DEVICE_MAP[self.port]
         prompt = await self.detect_prompt()
 
-        if prompt.endswith('>'):
+        if prompt and prompt.endswith('>'):
             self.write('enable\n')
             prompt = await self.detect_prompt()
+        if prompt and '(config' in prompt:
+            self.write('end\n')
+            prompt = await self.detect_prompt()
 
-        self.write('show running-config\n')
-        running_config = await self.readuntil(prompt)
+        self.write("show running-config\n")
 
+        rezultat = ""
+        while True:
+            bucata = await self.read(1024)
+            if not bucata:
+                break
+            rezultat += bucata
+
+            if "--More--" in bucata:
+                self.write(" ")
+                await asyncio.sleep(0.1)
+
+            # dacă am ajuns la prompt, ieșim
+            if prompt in bucata:
+                break
+        rezultat_curat = "\n".join(
+            line for line in rezultat.splitlines()
+            if "--More--" not in line and "\x08" not in line and "show running-config" not in line
+        )
         with open(filename, "w") as f:
-            f.write(running_config)
+            f.write(rezultat_curat)
 
         print(f"Saved running-config for {device_name} in {filename}")
 
