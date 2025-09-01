@@ -48,6 +48,7 @@ class TelnetConnection:
         else:
             print(f"[WARNING] Prompt not detected in output: {result!r}")
             return ">"  # fallback minim
+
     # m am folosit de modulul 4
 
     #la tema3 cred ca am nevoie de varinata configure fara Queue
