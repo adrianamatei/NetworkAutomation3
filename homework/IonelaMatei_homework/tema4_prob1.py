@@ -20,7 +20,7 @@
 
 
 import asyncio
-from lib.connectors.telnet_conn_tema3 import TelnetConnection
+from lib.connectors.telnet_conn_tema4 import TelnetConnection
 import os
 
 PORTS = [5120, 5121]
