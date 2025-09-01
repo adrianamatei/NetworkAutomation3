@@ -1,0 +1,71 @@
+import asyncio
+import time
+import re
+
+import telnetlib3
+
+HOST = '92.81.55.146'
+PORT = 5120  # replace with yours
+
+class TelnetConnection:
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+
+    def __enter__(self):
+        return self
+
+    async def connect(self):
+        self.reader, self.writer = await telnetlib3.open_connection(self.host, self.port)
+
+    def print_info(self):
+        print('Reader: {}'.format(self.reader))
+        print('Writer: {}'.format(self.writer))
+
+    async def readuntil(self, separator: str):
+        response = await self.reader.readuntil(separator.encode())
+        return response.decode()
+
+    async def read(self, n: int):
+        return await self.reader.read(n)
+
+    def write(self, data: str):
+        self.writer.write(data)
+
+    #la tema3 cred ca am nevoie de varinata configure fara Queue
+
+
+    async def configure(self, interface, ip, mask="255.255.255.0"):
+        self.write('\n')
+        await asyncio.sleep(1)
+        result = await self.read(3000)
+
+        if 'IOU1#' in result:
+            self.write('conf t\n')
+            await self.readuntil('IOU1(config)#')
+            self.write(f'interface {interface}\n')
+            await self.readuntil('IOU1(config-if)#')
+            self.write(f'ip address {ip} {mask}\n')
+            await self.readuntil('IOU1(config-if)#')
+            self.write('no shutdown\n')
+            await self.readuntil('IOU1(config-if)#')
+            self.write('exit\n')
+            await self.readuntil('IOU1(config)#')
+            print(f"Configurata interfata {interface} cu {ip}")
+
+    async def close(self):
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.write('\n')
+
+if __name__ == '__main__':
+    conn = TelnetConnection(HOST, PORT)
+
+    async def main():
+        await conn.connect()
+        conn.write('\n')
+        await conn.readuntil('\n')
+        conn.print_info()
+    asyncio.run(main())
+
