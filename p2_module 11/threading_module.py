@@ -1,6 +1,8 @@
 import threading
 import time
 import random
+
+
 '''
 global_var=[]
 
@@ -58,6 +60,7 @@ for t in threads:
     t.join()
 print("Final counter: ",counter)
 '''
+'''
 #deadlock
 counter=0
 lock1=threading.Lock()
@@ -82,4 +85,33 @@ for t in threads:
     t.start()
 for t in threads:
     t.join()
-print("Final counter: ",counter)
+print("Final counter: ",counter)'''
+
+'''
+import threading
+lock=threading.RLock()
+
+# def task():
+#     with lock:
+#         print("Outer lock acquired")
+#         with lock:
+#             print("Inner lock acquired")
+#
+#
+# threading.Thread(target=task).start()
+
+def factorial(n):
+    if n==0:
+        return 1
+    with lock:
+         return n*factorial(n-1)
+    
+threads=[]
+for i in range(100):
+    threading.Thread(target=factorial, args=(i,))
+    threads.append(thread)
+    thread.start()
+for thread in threads:
+    res=thread.join()
+
+threading.Thread(target=factorial, args=(5,)).start()'''
