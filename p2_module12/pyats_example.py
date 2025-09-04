@@ -2,6 +2,8 @@ from pyats import aetest, topology
 import subprocess
 from pyats.datastructures import AttrDict
 import sys
+# from lib.connectors.ssh_conn import SshConnection
+# from lib.connectors.telnet_con import TelnetConnection
 
 obj = AttrDict()
 print(sys.path)
@@ -11,7 +13,7 @@ class CommonSetup(aetest.CommonSetup):
     @aetest.subsection
     def load_testbed(self, steps):
         with steps.start('Load testbed'):
-            self.tb = topology.loader.load('testbed1.yaml')
+            self.tb = topology.loader.load('new_testbed.yaml')
             self.parent.parameters.update(tb=self.tb)
 
     @aetest.subsection

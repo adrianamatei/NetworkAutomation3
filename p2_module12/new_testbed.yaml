@@ -1,7 +1,6 @@
 testbed:
   name: NetworkAutomation3
 
-
 devices:
   UbuntuServer:
     os: linux
@@ -20,25 +19,21 @@ devices:
   IOU1:
     os: ios
     type: router
+    credentials:
+      default:
+        username: ionela
+        password: ionela123
     connections:
       telnet:
         class: lib.connectors.telnet_con.TelnetConnection
         protocol: telnet
         ip: 192.168.200.10
         port: 5120
-        credentials:
-          login:
-            username: ionela
-            password: ionela123
       ssh:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
-        ip: 192.168.200.1
+        ip: 192.168.200.10
         port: 22
-        credentials:
-          login:
-            username: ionela
-            password: ionela123
 
   Router:
     os: ios
@@ -46,31 +41,24 @@ devices:
     custom:
       hostname: RouterIOSv
     credentials:
+      default:
+        username: ionela
+        password: ionela123
       enable:
         password: ionela123
     connections:
       telnet:
         class: lib.connectors.telnet_con.TelnetConnection
         protocol: telnet
-        ip: 192.168.10.100
+        ip: 192.168.200.30
         port: 5121
-        credentials:
-          login:
-            username: ionela
-            password: ionela123
       ssh:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
-        ip: 192.168.200.10
+        ip: 192.168.200.30
         port: 22
-        credentials:
-          login:
-            username: ionela
-            password: ionela123
-
 
 topology:
-
   UbuntuServer:
     interfaces:
       ens4:
@@ -89,7 +77,7 @@ topology:
   Router:
     interfaces:
       GigabitEthernet0/0:
-        type: ethernet
         alias: initial
+        type: ethernet
         link: management
         ipv4: 192.168.200.30/24
