@@ -1,6 +1,5 @@
 import asyncio
-import time
-import re
+from os import write
 from queue import Queue
 
 import telnetlib3
@@ -31,43 +30,33 @@ class TelnetConnection:
         return await self.reader.read(n)
 
     def write(self, data: str):
-        self.writer.write(data)
+        self.writer.write(data + '\r\n')
 
-    #la tema3 cred ca am nevoie de varinata configure fara Queue
-    #varianta de la clasa, pe wapp varianta mea
-    async def configure(self, completed:Queue=None):
-        self.write(' \n')
-        await asyncio.sleep(5)
+    async def execute_commends(self, command: list, prompt: str):
+        for cmd in command:
+            self.write(cmd)
+            await self.readuntil(prompt)
+
+    async def configure(self):
+        self.write('')
+        await asyncio.sleep(2)
         result = await self.read(3000)
-        if 'Router>' in result:
-            self.write('enable\n')
-            await self.readuntil('Router#')
-            self.write('conf t\n')
+        if 'Router#' in result:
+            self.write('conf t')
             await self.readuntil('Router(config)#')
-            self.write('interface g0/0\n')
+            self.write('interface g0/0')
             await self.readuntil('Router(config-if)#')
-            self.write('ip address 192.168.200.3 255.255.255.0\n')
+            self.write('ip address 192.168.200.30 255.255.255.0')
             await self.readuntil('Router(config-if)#')
-            self.write('no shutdown\n')
+            self.write('no shutdown')
             await self.readuntil('Router(config-if)#')
-            completed.put("Router:192.168.200.3")
+           # completed.put({"Router": "192.168.200.3"})
 
         elif 'IOU1#' in result:
-            self.write('conf t\n')
-            await self.readuntil('IOU1(config)#')
-            self.write('interface eth0/0\n')
-            await self.readuntil('IOU1(config-if)#')
-            self.write('ip address 192.168.200.4 255.255.255.0\n')
-            await self.readuntil('IOU1(config-if)#')
-            self.write('no shutdown\n')
-            await self.readuntil('IOU1(config-if)#')
-            completed.put("IOU1:192.168.200.4")
-
-    async def close(self):
-        pass
+            self.write('conf t')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.write('\n')
+        self.write('\r\n')
 
 if __name__ == '__main__':
     conn = TelnetConnection(HOST, PORT)
@@ -78,12 +67,3 @@ if __name__ == '__main__':
         await conn.readuntil('\n')
         conn.print_info()
     asyncio.run(main())
-
-    # conn.print_info()
-
-    # asyncio.run(conn.connect_to_device())
-    # conn.print_info()
-
-    # with TelnetConnection(HOST, PORT) as conn:
-    #     asyncio.run(conn.connect_to_device())
-    #     conn.print_info()
