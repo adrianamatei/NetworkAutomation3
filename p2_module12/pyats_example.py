@@ -1,11 +1,12 @@
 import subprocess
 
+
 from pyats import aetest, topology
 from pyats.datastructures import AttrDict
 import sys
 print(sys.path)
 # import yaml
-obj=AttrDict
+#obj=AttrDict
 #
 # with open('testbed.yaml', 'r') as yaml_file:
 #     data=yaml.safe_load(yaml_file)
@@ -15,10 +16,10 @@ class CommonSetup(aetest.CommonSetup):
     @aetest.subsection
     def load_testbed(self, steps):
         with steps.start("Load testbed"):
-            self.tb = topology.loader.load('testbed.yaml')
-            dev=self.tb.devices.IOU1
-            dev=self.tb.devices['IOU1']
-            print(self.tb)
+            self.tb = topology.loader.load('new_testbed.yaml')
+            # dev=self.tb.devices.IOU1
+            # dev=self.tb.devices['IOU1']
+            # print(self.tb)
             self.parent.parameters.update(tb=self.tb)
 
     @aetest.subsection
