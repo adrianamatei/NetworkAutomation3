@@ -8,7 +8,7 @@ devices:
     type: linux
     connections:
       ssh:
-        class: lib.connectors.ssh_con.SshConnection
+        class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
         ip: 192.168.200.1
         port: 22
@@ -31,7 +31,7 @@ devices:
             username: ionela
             password: ionela123
       ssh:
-        class: lib.connectors.ssh_con.SshConnection
+        class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
         ip: 192.168.200.1
         port: 22
@@ -44,7 +44,7 @@ devices:
     os: ios
     type: router
     custom:
-      hostname: Router
+      hostname: RouterIOSv
     credentials:
       enable:
         password: ionela123
@@ -59,7 +59,7 @@ devices:
             username: ionela
             password: ionela123
       ssh:
-        class: lib.connectors.ssh_con.SshConnection
+        class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
         ip: 192.168.200.10
         port: 22
