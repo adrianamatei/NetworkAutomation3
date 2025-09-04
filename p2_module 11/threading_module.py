@@ -58,7 +58,7 @@ for t in threads:
     t.join()
 print("Final counter: ",counter)
 '''
-
+#deadlock
 counter=0
 lock1=threading.Lock()
 lock2=threading.Lock()
