@@ -50,12 +50,12 @@ devices:
       telnet:
         class: lib.connectors.telnet_con.TelnetConnection
         protocol: telnet
-        ip: 192.168.200.30
+        ip: 192.168.200.20
         port: 5121
       ssh:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
-        ip: 192.168.200.30
+        ip: 192.168.200.20
         port: 22
 
 topology:
@@ -73,6 +73,14 @@ topology:
         type: ethernet
         link: management
         ipv4: 192.168.200.10/24
+      Ethernet0/1:
+        type: ethernet
+        link: guest1
+        ipv4: 192.168.210.10/24
+      Ethernet0/2:
+          type: ethernet
+          link: iou_iosv
+          ipv4: 192.168.210.10/24
 
   Router:
     interfaces:
@@ -80,4 +88,12 @@ topology:
         alias: initial
         type: ethernet
         link: management
-        ipv4: 192.168.200.30/24
+        ipv4: 192.168.200.20/24
+      GigabitEthernet0/1:
+        type: ethernet
+        link: iou_iosv
+        ipv4: 192.168.220.20/24
+      GigabitEthernet0/2:
+          type: ethernet
+          link: iosv_csr
+          ipv4: 192.168.230.20/24
