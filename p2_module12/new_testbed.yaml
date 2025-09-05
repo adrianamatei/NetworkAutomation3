@@ -10,7 +10,7 @@ devices:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
         ip: 192.168.200.1
-        port: 22
+        port: 36
         credentials:
           login:
             username: osboxes
@@ -33,7 +33,7 @@ devices:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
         ip: 192.168.200.10
-        port: 22
+        port: 36
 
   Router:
     os: ios
@@ -56,7 +56,7 @@ devices:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
         ip: 192.168.200.20
-        port: 22
+        port: 36
 
 topology:
   UbuntuServer:
