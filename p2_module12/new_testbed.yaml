@@ -41,7 +41,7 @@ devices:
         class: lib.connectors.rest_con.RESTConnector
         protocol: ssh
         ip: 192.168.200.30
-        port: 22
+        port: 443
         credentials:
           login:
             username: ionela
