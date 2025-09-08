@@ -27,8 +27,8 @@ devices:
       telnet:
         class: lib.connectors.telnet_con.TelnetConnection
         protocol: telnet
-        ip: 192.168.200.10
-        port: 5120
+        ip: 92.81.55.146  #192.168.200.10
+        port: 5120 # 23
       ssh:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
@@ -50,8 +50,8 @@ devices:
       telnet:
         class: lib.connectors.telnet_con.TelnetConnection
         protocol: telnet
-        ip: 192.168.200.20
-        port: 5121
+        ip: 92.81.55.146 #192.168.200.20
+        port: 5121 #23
       ssh:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh

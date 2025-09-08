@@ -1,7 +1,13 @@
+import asyncio
+from queue import Queue
+from multiprocessing import Queue
 from pyats import aetest, topology
 import subprocess
 from pyats.datastructures import AttrDict
 import sys
+
+from lib.connectors.telnet_con import TelnetConnection
+
 # from lib.connectors.ssh_conn import SshConnection
 # from lib.connectors.telnet_con import TelnetConnection
 
@@ -36,7 +42,37 @@ class CommonSetup(aetest.CommonSetup):
                     subnet = self.tb.devices[device].interfaces[interface].ipv4.network.compressed
                     subprocess.run(['sudo', 'ip', 'route', 'add', f'{subnet}', 'via', f'{gateway}'])
 
-                # print(device)
+    @aetest.subsection
+    def bring_up_server_interface(self, steps):
+        for device in self.tb.devices:
+            if self.tb.devices[device].type != 'router':
+                continue
+            with steps.start(f'Bring up interface {device}',continue_=True):
+
+                for interface in self.tb.devices[device].interfaces:
+                    if self.tb.devices[device].interfaces[interface].link.name !='management':
+                        continue
+
+                    conn_class=self.tb.devices[device].connections.get('telnet',{}).get('class',None)
+                    assert conn_class,'No connection for device {}'.format(device)
+                    ip=self.tb.devices[device].connections.telnet.ip.compressed
+                    port=self.tb.devices[device].connections.telnet.port
+                    conn:TelnetConnection = conn_class(ip, port)
+
+                    async def setup():
+                        await conn.connect()
+                        await conn.configure()
+                    asyncio.run(setup())
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':

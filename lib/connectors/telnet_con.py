@@ -41,15 +41,15 @@ class TelnetConnection:
         self.write('')
         await asyncio.sleep(2)
         result = await self.read(3000)
-        if 'Router#' in result:
+        if 'RouterIOSv#' in result:
             self.write('conf t')
-            await self.readuntil('Router(config)#')
-            self.write('interface g0/0')
-            await self.readuntil('Router(config-if)#')
-            self.write('ip address 192.168.200.30 255.255.255.0')
-            await self.readuntil('Router(config-if)#')
-            self.write('no shutdown')
-            await self.readuntil('Router(config-if)#')
+            await self.readuntil('RouterIOSv(config)#')
+            # self.write('interface g0/0')
+            # await self.readuntil('Router(config-if)#')
+            # self.write('ip address 192.168.200.30 255.255.255.0')
+            # await self.readuntil('Router(config-if)#')
+            # self.write('no shutdown')
+            # await self.readuntil('Router(config-if)#')
            # completed.put({"Router": "192.168.200.3"})
 
         elif 'IOU1#' in result:
