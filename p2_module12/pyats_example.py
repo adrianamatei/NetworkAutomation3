@@ -95,25 +95,25 @@ class CommonSetup(aetest.CommonSetup):
                         await conn.execute_commends(formatted_commands, '#')
                     asyncio.run(setup())
     @aetest.subsection
-    def connect_via_rest(self,steps):
-        for device in self.tb.devices:
-            if self.tb.devices[device].type != 'router':
-                continue
-            if 'rest' not in self.tb.devices[device].connections:
-                continue
-
-
-            for interface in self.tb.devices[device].interfaces:
-                if self.tb.devices[device].interfaces[interface].link.name !='management':
+    def connect_via_rest(self, steps):
+        with steps.start("Connect via rest"):
+            for device in self.tb.devices:
+                if self.tb.devices[device].type != 'router':
                     continue
-                conn_class: RESTConnector=self.tb.devices[device].connections['rest']['class']
-                conn_data=self.tb.devices[device].connections['rest']
-                conn_obj=conn_class(
-                    ip=conn_data.ip.compressed,
-                    port=conn_data['port'],
-                    username=conn_data['username'],
-                    password=conn_data['password'],
-                )
+                if "rest" not in self.tb.devices[device].connections:
+                    continue
+                for interface in self.tb.devices[device].interfaces:
+                    if self.tb.devices[device].interfaces[interface].link.name != 'management':
+                        continue
+                    conn_class: RESTConnector = self.tb.devices[device].connections["rest"]['class']
+                    conn_data = self.tb.devices[device].connections["rest"]
+                    conn_obj = conn_class(
+                        ip=conn_data.ip.compressed,
+                        port=conn_data.port,
+                        username=conn_data.credentials.login['username'],
+                        password=conn_data.credentials.login['password'],
+                    )
+                    conn_obj.connect()
 
 
 
