@@ -20,6 +20,7 @@ devices:
     type: router
     custom:
       hostname: RouterCSR
+      domain: cisco.com
     credentials:
       default:
         username: ionela
@@ -50,6 +51,9 @@ devices:
   IOU1:
     os: ios
     type: router
+    custom:
+      hostname: IOU1
+      domain: cisco.com
     credentials:
       default:
         username: ionela
@@ -71,6 +75,7 @@ devices:
     type: router
     custom:
       hostname: RouterIOSv
+      domain: cisco.com
     credentials:
       default:
         username: ionela
