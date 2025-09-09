@@ -7,7 +7,7 @@ commands = [
     "exit",
     "hostname {hostname}",
     "ip domain name {domain}",
-    "username {username} secret {password}",
+    "username {username} password {password}",
     "crypto key generate rsa modulus 2048",
     "line vty 0 4",
     "login local",

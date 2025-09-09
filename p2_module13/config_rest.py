@@ -18,7 +18,7 @@ class CommonSetup(aetest.CommonSetup):
     @aetest.subsection
     def load_testbed(self, steps):
         with steps.start("Load testbed"):
-            self.tb = topology.loader.load('testbed.yaml')
+            self.tb = topology.loader.load('new_testbed.yaml')
             self.parent.parameters.update(tb=self.tb)
 
     @aetest.subsection
@@ -38,10 +38,10 @@ class CommonSetup(aetest.CommonSetup):
                         ip=conn_data.ip.compressed,
                         port=conn_data.port,
                         username=conn_data.credentials.login['username'],
-                        password=conn_data.credentials.login['password'],
+                        password=conn_data.credentials.login['password'].plaintext,
                     )
                     conn.connect()
-                    conn.get_interface('Gi1')
+                    print(conn.get_interface('GigabitEthernet1'))
 
 
 class ConfigureInterfaces(aetest.Testcase):
@@ -53,5 +53,5 @@ class ConfigureInterfaces(aetest.Testcase):
         print(conn)
 
 
-if __name__ == '_main_':
+if __name__ == '__main__':
     aetest.main()
