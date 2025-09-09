@@ -94,6 +94,7 @@ class CommonSetup(aetest.CommonSetup):
                         time.sleep(1)
                         await conn.execute_commends(formatted_commands, '#')
                     asyncio.run(setup())
+
     @aetest.subsection
     def connect_via_rest(self, steps):
         with steps.start("Connect via rest"):
@@ -106,19 +107,13 @@ class CommonSetup(aetest.CommonSetup):
                     if self.tb.devices[device].interfaces[interface].link.name != 'management':
                         continue
                     conn_data = self.tb.devices[device].connections["rest"]
-                    conn: RESTConnector = self.tb.devices[device].connections["rest"]['class']
-
-                    conn_obj = conn_class(
+                    conn: RESTConnector = self.tb.devices[device].connections["rest"]['class'](
                         ip=conn_data.ip.compressed,
                         port=conn_data.port,
                         username=conn_data.credentials.login['username'],
                         password=conn_data.credentials.login['password'].plaintext,
                     )
-                    conn_obj.connect()
-
-
-
-
+                    conn.connect()
 
 
 class ConfigureInterfaces(aetest.Testcase):
