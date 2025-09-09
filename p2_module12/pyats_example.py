@@ -80,7 +80,7 @@ class CommonSetup(aetest.CommonSetup):
                             hostname=device,
                             domain=self.tb.devices[device].custom.get('domain',''),
                             username=self.tb.devices[device].connections.telnet.credentials.login.username,
-                            password=self.tb.devices[device].connections.telnet.credentials.login.password,
+                            password=self.tb.devices[device].connections.telnet.credentials.login.password.plaintext,
 
                         ),
                         commands
