@@ -100,11 +100,11 @@ topology:
         ipv4: 192.168.200.30/24
       GigabitEthernet2:
         type: ethernet
-        link: csr_guest
+        link: csr_routerIosv
         ipv4: 192.168.230.30/24
       GigabitEthernet3:
         type: ethernet
-        link: csr_extra
+        link: csr_ftd
         ipv4: 192.168.240.30/24
 
 
