@@ -41,6 +41,7 @@ class CommonSetup(aetest.CommonSetup):
                     )
                     conn.connect()
                     print(conn.get_restconf_capabilities())
+                    print(conn.get_netconf_capabilities())
                     print(conn.get_interface('GigabitEthernet1'))
 
 
