@@ -5,16 +5,17 @@ devices:
   UbuntuServer:
     os: linux
     type: linux
+    credentials:
+      login:
+        username: osboxes
+        password: osboxes.org
     connections:
       ssh:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
         ip: 192.168.200.1
-        port: 36
-        credentials:
-          login:
-            username: osboxes
-            password: osboxes.org
+        port: 22
+
   RouterCSR:
     os: iosxe
     type: router
@@ -29,9 +30,9 @@ devices:
         password: ionela123
     connections:
       unicon:
-      protocol: ssh
-      ip: 192.168.200.30
-      port: 22
+        protocol: ssh
+        ip: 192.168.200.30
+        port: 22
 
   IOU1:
     os: ios
@@ -64,9 +65,9 @@ devices:
         password: ionela123
     connections:
       unicon:
-      protocol: ssh
-      ip: 192.168.200.20
-      port: 22
+        protocol: ssh
+        ip: 192.168.200.20
+        port: 22
 
 topology:
   UbuntuServer:
