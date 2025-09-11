@@ -1,5 +1,3 @@
-
-
 import genie
 from genie.libs.conf.base import ipaddress
 import ipaddress
@@ -26,24 +24,40 @@ class ConfigureGenie(aetest.Testcase):
         self.dev.connect(log_stdout=True)
         #print(dev)
     @aetest.test
-    def configure_interfaces(self,steps):
-        with steps.start("Configure interface 2"):
-            intf=Interface(
-                #device=self.dev,
+    def configure_interfaces(self, steps):
+        with steps.start("Configure interface 1"):
+            intf = Interface(
                 name='GigabitEthernet2'
             )
-            intf.device=self.dev
-            intf.ipv4=self.dev.interfaces['GigabitEthernet2'].ipv4
-            config=intf.build_config(apply=False)
+            intf.device = self.dev
+            intf.ipv4 = self.dev.interfaces['GigabitEthernet2'].ipv4
+            config = intf.build_config(apply=False)
+            self.dev.configure(config.cli_config.data)
+            print(config)
+
+        with steps.start("Configure interface 2"):
+            intf = Interface(
+                name='GigabitEthernet3'
+            )
+            intf.device = self.dev
+            intf.ipv4 = self.dev.interfaces['GigabitEthernet3'].ipv4
+            config = intf.build_config(apply=False)
             self.dev.configure(config.cli_config.data)
             print(config)
 
         with steps.start("Configure static routing"):
+            route = StaticRouting()
+            route.device = self.dev
+            # route.vrf='default'
+            # route.address_family='ipv4'
+            # route.route='192.168.250.0/24'
+            # route.nexthop='192.168.240.40'
 
-            route=StaticRouting()
-            route.device=self.dev
-            route.route()
-            config=route.build_config(apply=False)
+            route.device_attr[self.dev].vrf_attr['default'].address_family_attr['ipv4'].route_attr['192.168.250.0/24'].next_hop_attr['192.168.240.40'].set_value(True)
+            print(route)
+            print(dir(route))
+            route.route = ''
+            config = route.build_config(apply=False)
             self.dev.configure(config.cli_config.data)
 
 
