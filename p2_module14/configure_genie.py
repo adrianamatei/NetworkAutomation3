@@ -1,3 +1,33 @@
+
+'''
+# PENTRU CONFIGURAEA DINAMICA A RUTELOR CU OSPF #
+
+from genie.libs.conf.ospf import Ospf
+
+@aetest.test
+def configure_ospf(self, steps):
+    with steps.start("Configure OSPF on RouterCSR"):
+        ospf = Ospf()
+        ospf.device = self.dev
+        ospf.device_attr[self.dev].vrf_attr['default'].router_id = "1.1.1.1"
+
+        # Adaugăm interfețele în OSPF area 0
+        ospf.device_attr[self.dev].vrf_attr['default'] \
+            .address_family_attr['ipv4'] \
+            .area_attr[0] \
+            .interface_attr['GigabitEthernet2']
+
+        ospf.device_attr[self.dev].vrf_attr['default'] \
+            .address_family_attr['ipv4'] \
+            .area_attr[0] \
+            .interface_attr['GigabitEthernet3']
+
+        config = ospf.build_config(apply=False)
+        self.dev.configure(config[self.dev.name].cli_config.data)
+
+        print(config[self.dev.name].cli_config.data)
+
+'''
 import genie
 from genie.libs.conf.base import ipaddress
 import ipaddress
