@@ -45,20 +45,44 @@ class ConfigureGenie(aetest.Testcase):
             self.dev.configure(config.cli_config.data)
             print(config)
 
+        # with steps.start("Configure static routing"):
+        #     route = StaticRouting()
+        #     route.device = self.dev
+        #     # route.vrf='default'
+        #     # route.address_family='ipv4'
+        #     # route.route='192.168.250.0/24'
+        #     # route.nexthop='192.168.240.40'
+        #
+        #     route.device_attr[self.dev].vrf_attr['default'].address_family_attr['ipv4'].route_attr['192.168.250.0/24'].next_hop_attr['192.168.240.40'].set_value(True)
+        #     print(route)
+        #     print(dir(route))
+        #     route.route = ''
+        #     config = route.build_config(apply=False)
+        #     self.dev.configure(config.cli_config.data)
         with steps.start("Configure static routing"):
             route = StaticRouting()
             route.device = self.dev
-            # route.vrf='default'
-            # route.address_family='ipv4'
-            # route.route='192.168.250.0/24'
-            # route.nexthop='192.168.240.40'
 
-            route.device_attr[self.dev].vrf_attr['default'].address_family_attr['ipv4'].route_attr['192.168.250.0/24'].next_hop_attr['192.168.240.40'].set_value(True)
-            print(route)
-            print(dir(route))
-            route.route = ''
+            # ia testbed-ul din parametri
+            tb: Testbed = self.parent.parameters.get("tb")
+
+            # exemplu: vreau să ajung la LAN-ul din spatele Router (192.168.220.0/24)
+            dest_network = ipaddress.IPv4Interface(
+                tb.devices.Router.interfaces['GigabitEthernet0/1'].ipv4
+            ).network
+
+            # next-hop = adresa Router-ului pe legătura dintre Router și CSR (192.168.230.20)
+            next_hop = str(ipaddress.IPv4Interface(
+                tb.devices.Router.interfaces['GigabitEthernet0/2'].ipv4
+            ).ip)
+
+            # construim ruta
+            route.device_attr[self.dev].vrf_attr['default'].address_family_attr['ipv4'] \
+                .route_attr[str(dest_network)].next_hop_attr[next_hop].set_value(True)
+
             config = route.build_config(apply=False)
             self.dev.configure(config.cli_config.data)
+            print(config)
 
 
 if __name__ == '__main__':
