@@ -44,7 +44,7 @@ class CommonSetup(aetest.CommonSetup):
     @aetest.subsection
     def load_testbed(self, steps):
         with steps.start("Load testbed"):
-            tb = topology.loader.load('new_testbed.yaml')
+            tb = topology.loader.load('genie_testbed.yaml')
             self.parent.parameters.update(tb=tb)
 
 

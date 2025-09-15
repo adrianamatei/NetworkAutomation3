@@ -13,7 +13,7 @@ import p2_module12.ssh_config
 from p2_module12 import ssh_config
 
 
-# with open("testbed.yaml", "r") as yaml_file:
+# with open("ftd_testbed.yaml", "r") as yaml_file:
 #     data = yaml.load(yaml_file)
 #     print(data)
 
