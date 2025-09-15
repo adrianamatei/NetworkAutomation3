@@ -28,6 +28,8 @@ def configure_ospf(self, steps):
         print(config[self.dev.name].cli_config.data)
 
 '''
+
+
 import genie
 from genie.libs.conf.base import ipaddress
 import ipaddress
@@ -89,6 +91,7 @@ class ConfigureGenie(aetest.Testcase):
         #     route.route = ''
         #     config = route.build_config(apply=False)
         #     self.dev.configure(config.cli_config.data)
+
         with steps.start("Configure static routing"):
             route = StaticRouting()
             route.devices = [self.dev]

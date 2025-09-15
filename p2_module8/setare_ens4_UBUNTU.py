@@ -13,7 +13,7 @@ def get_interface_ip(iface):
     return None
 
 def set_interface_ip(iface, ip, mask="24"):
-    subprocess.run(["sudo", "ip", "addr", "flush", "dev", iface])  # curăță IP-urile vechi
+    subprocess.run(["sudo", "ip", "addr", "flush", "dev", iface])
     subprocess.run(["sudo", "ip", "addr", "add", f"{ip}/{mask}", "dev", iface])
     subprocess.run(["sudo", "ip", "link", "set", iface, "up"])
 
