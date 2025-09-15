@@ -7,7 +7,7 @@ class CommonSetup(aetest.CommonSetup):
     @aetest.subsection
     def load_testbed(self, steps):
         with steps.start("Load testbed"):
-            tb = topology.loader.load('new_testbed.yaml')
+            tb = topology.loader.load('testbed_ssh.yaml')
             self.parent.parameters.update(tb=tb)
 
 
@@ -16,10 +16,10 @@ class ConfigureGenie(aetest.Testcase):
     def connect(self, steps):
         tb = self.parent.parameters.get("tb")
         conn: SshConnection = tb.devices.RouterCSR.connections.ssh['class'](
-            host=str(tb.devices.CSR.connections.ssh['ip']),
-            port=str(tb.devices.CSR.connections.ssh['port']),
-            username=tb.devices.CSR.connections.ssh.credentials.default['username'],
-            password=tb.devices.CSR.connections.ssh.credentials.default['password'].plaintext,
+            host=str(tb.devices.RouterCSR.connections.ssh['ip']),
+            port=str(tb.devices.RouterCSR.connections.ssh['port']),
+            username=tb.devices.RouterCSR.connections.ssh.credentials.default['username'],
+            password=tb.devices.RouterCSR.connections.ssh.credentials.default['password'].plaintext,
         )
         conn.connect()
         conn.configure()
