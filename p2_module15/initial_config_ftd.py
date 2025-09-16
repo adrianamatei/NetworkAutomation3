@@ -11,7 +11,7 @@ from lib.connectors.telnet_con import TelnetConnection
 print(sys.path)
 
 
-class ConfigureFTDManagement(aetest.Testcase):
+class ConfigureFDMManagement(aetest.Testcase):
     @aetest.test
     def load_testbed(self, steps):
         with steps.start("Load testbed"):
@@ -23,7 +23,7 @@ class ConfigureFTDManagement(aetest.Testcase):
         for device in self.tb.devices:
             if self.tb.devices[device].type != 'ftd':
                 continue
-            with steps.start(f'Bring up management interface {device}', continue_=True) as step: #type: Step
+            with steps.start(f'Bring up management interface {device}', continue_=True) as step:  # type: Step
 
                 for interface in self.tb.devices[device].interfaces:
                     if self.tb.devices[device].interfaces[interface].link.name != 'management':
@@ -40,15 +40,16 @@ class ConfigureFTDManagement(aetest.Testcase):
                         await conn.connect()
                         time.sleep(1)
                         conn.write('')
-                        time.sleep(1)
+                        time.sleep(2)
                         out = await conn.read(n=1000)
                         print(out)
-                        result = re.search(r'^(?P<login>firepower login:)', out)
+                        result = re.search(r'^\s*(?P<login>firepower login:)', out)
                         if not result:
-                            Step.skipped(reason = '! Configuration not required !')
+                            step.skipped(reason='Configuration not required')
+
                         if result.group('login'):
                             conn.write('admin')
-                            time.sleep(0.1)
+                            time.sleep(1)
                             conn.write('Admin123')
                             time.sleep(1)
 
@@ -123,11 +124,9 @@ class ConfigureFTDManagement(aetest.Testcase):
                             time.sleep(1)
                             out = await conn.read(n=1000)
 
-                    # try:
-                    #     asyncio.run(setup())
-                    # except BaseException as e:
-                    #     print(e)
-                    #     print(e.args)
+
+                    asyncio.run(setup())
+
 
 
 class ConfigureInterfaces(aetest.Testcase):

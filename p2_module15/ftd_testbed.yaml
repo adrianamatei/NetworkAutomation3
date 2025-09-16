@@ -65,7 +65,7 @@ devices:
         class: lib.connectors.telnet_con.TelnetConnection
         protocol: telnet
         ip: 92.81.55.146  #192.168.200.10
-        port: 5002 # 23
+        port: 5038 # 23
       ssh:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh
@@ -73,13 +73,19 @@ devices:
         port: 22
       rest:
         class: lib.connectors.rest_con.RESTConnector
-        protocol: ssh
+        protocol: https
         ip: 192.168.200.40
         port: 443
         credentials:
           login:
             username: ionela
             password: ionela123
+      swagger:
+        class: lib.connectors.swagger_con.SwaggerConnector
+        protocol: https
+        ip: 192.168.200.40
+        port: 443
+
 
   IOU1:
     os: ios
