@@ -6,10 +6,14 @@ from pyats.topology import Device
 
 class SwaggerConnector:
     def __init__(self,device:Device):
+        self.device = device
         self._session = None
         self._headers = None
         self._auth = None
         self._url=None
+        self._access_token=None
+        self.__refresh_token=None
+        self._token_type=None
 
     def connect(self):
         host=self.device.connections.swagger.ip
@@ -35,9 +39,12 @@ class SwaggerConnector:
             }
             )
         )
-        self.access_token=response.json()['access_token']
-        self.refresh_token=response.json()['refresh_token']
-        self.token_type=response.json()['token_type']
+        self.__access_token=response.json()['access_token']
+        self.__refresh_token=response.json()['refresh_token']
+        self.__token_type=response.json()['token_type']
+        self._headers.update({
+            'Authorization': f'{self._token_type}, {self.__access_token}',
+        })
 
 
     def logout(self):
