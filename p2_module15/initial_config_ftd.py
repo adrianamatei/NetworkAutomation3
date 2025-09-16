@@ -38,6 +38,7 @@ class CommonSetup(aetest.CommonSetup):
                     port = self.tb.devices[device].connections.telnet.port
                     conn: TelnetConnection = conn_class(ip, port)
 
+
                     async def setup():
                         await conn.connect()
                         time.sleep(1)
@@ -45,12 +46,16 @@ class CommonSetup(aetest.CommonSetup):
                         time.sleep(1)
                         out = await conn.read(n=1000)
                         print(out)
+                        #result = re.search(r'^(?P<login>firepower login:)', out, re.MULTILINE)
                         result = re.search(r'^(?P<login>firepower login:)', out)
+                        if not result:
+                            self.skipped[device] = True
                         if result.group('login'):
-                            conn.write('admin')
+                            conn.write('admin\n')
                             time.sleep(0.1)
-                            conn.write('Admin123')
+                            conn.write('Admin123\n')
                             time.sleep(1)
+
 
                         out = await conn.read(n=1000)
                         if 'EULA:' in out:
@@ -58,24 +63,28 @@ class CommonSetup(aetest.CommonSetup):
 
                             while True:
                                 time.sleep(1)
+
                                 out = await conn.read(n=1000)
                                 if '--More--' in out:
                                     conn.write(' ')
                                 elif 'EULA:' in out:
                                     conn.write('\n')
                                     time.sleep(1)
+
                                     out = await conn.read(n=1000)
                                     break
                                 else:
                                     print('no str found in eula')
 
-                        if 'password:' in out:
-                            conn.write(self.tb.devices[device].credentials.default.password.plaintext)
+                        if 'Enter new password:' in out:
+                            conn.write(self.tb.devices[device].credentials.default.password.plaintext+"\n")
                             time.sleep(1)
+
                             out = await conn.read(n=1000)
-                            if 'password:' in out:
-                                conn.write(self.tb.devices[device].credentials.default.password.plaintext)
+                            if 'Confirm new password:' in out:
+                                conn.write(self.tb.devices[device].credentials.default.password.plaintext + "\n")
                                 time.sleep(1)
+
                                 out = await conn.read(n=1000)
 
                         if 'IPv4? (y/n) [y]:' in out:
@@ -94,17 +103,20 @@ class CommonSetup(aetest.CommonSetup):
                             out = await conn.read(n=1000)
 
                         if '[192.168.45.45]:' in out:
-                            conn.write(intf_obj.ipv4.ip.compressed)
+                            conn.write(intf_obj.ipv4.ip.compressed+"\n")
+                            time.sleep(1)
                             time.sleep(1)
                             out = await conn.read(n=1000)
 
                         if '[255.255.255.0]:' in out:
-                            conn.write(intf_obj.ipv4.netmask.exploded)
+                            conn.write(intf_obj.ipv4.netmask.exploded+"\n")
+                            time.sleep(1)
                             time.sleep(1)
                             out = await conn.read(n=1000)
 
                         if '[192.168.45.1]:' in out:
-                            conn.write((intf_obj.ipv4.ip + 1).compressed)
+                            conn.write((intf_obj.ipv4.ip + 1).compressed+"\n")
+                            time.sleep(1)
                             time.sleep(1)
                             out = await conn.read(n=1000)
 
