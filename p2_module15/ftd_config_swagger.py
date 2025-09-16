@@ -12,12 +12,14 @@ class ConnectFTDREST(aetest.Testcase):
     def connect_via_rest(self, steps):
         with steps.start("Connect via rest"):
             for device in self.tb.devices:
-                if self.tb.devices[device].type != 'firewall':
+                if self.tb.devices[device].type != 'ftd':
                     continue
                 if "swagger" not in self.tb.devices[device].connections:
                     continue
                 connection = self.tb.devices[device].connect()
-                print(connection)
+                # print(connection)
+                swagger = connection.get_swagger_client()
+                print(swagger)
 
 
 if __name__ == '__main__':
