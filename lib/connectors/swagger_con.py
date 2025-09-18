@@ -1,3 +1,4 @@
+
 import json
 
 import requests
@@ -7,7 +8,7 @@ from bravado.requests_client import RequestsClient
 
 
 class SwaggerConnector:
-    def _init_(self, device: Device, **kwargs):
+    def __init__(self, device: Device, **kwargs):
         print('got:', kwargs)
         self.device = device
         self.client = None
@@ -50,7 +51,7 @@ class SwaggerConnector:
         self.__access_token = response.json()['access_token']
         self.__refresh_token = response.json()['refresh_token']
         self.__token_type = response.json()['token_type']
-        self.headers.update({'Authorization': f'{self.token_type} {self._access_token}'})
+        self._headers.update({'Authorization': f'{self.__token_type} {self.__access_token}'})
 
     def get_swagger_client(self):
         endpoint = '/apispec/ngfw.json'

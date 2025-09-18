@@ -1,3 +1,4 @@
+
 import asyncio
 import re
 import sys
@@ -55,7 +56,7 @@ class ConfigureFDMManagement(aetest.Testcase):
 
                         out = await conn.read(n=1000)
                         if 'EULA:' in out:
-                            conn.write('\r\n')
+                            conn.write('\n')
 
                             while True:
                                 time.sleep(1)
@@ -63,7 +64,7 @@ class ConfigureFDMManagement(aetest.Testcase):
                                 if '--More--' in out:
                                     conn.write(' ')
                                 elif 'EULA:' in out:
-                                    conn.write('\r\n')
+                                    conn.write('\n')
                                     time.sleep(1)
                                     out = await conn.read(n=1000)
                                     break
@@ -71,13 +72,13 @@ class ConfigureFDMManagement(aetest.Testcase):
                                     print('no str found in eula')
 
                         if 'password:' in out:
-                            conn.write(self.tb.devices[device].credentials.default.password.plaintext+'\n')
+                            conn.write(self.tb.devices[device].credentials.default.password.plaintext)
                             time.sleep(1)
                             out = await conn.read(n=1000)
                             if 'password:' in out:
-                                   conn.write(self.tb.devices[device].credentials.default.password.plaintext+'\n')
-                                   time.sleep(1)
-                                   out = await conn.read(n=1000)
+                                conn.write(self.tb.devices[device].credentials.default.password.plaintext)
+                                time.sleep(1)
+                                out = await conn.read(n=1000)
 
                         if 'IPv4? (y/n) [y]:' in out:
                             conn.write('')
