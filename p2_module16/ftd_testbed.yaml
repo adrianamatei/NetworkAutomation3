@@ -1,0 +1,203 @@
+testbed:
+  name: NetworkAutomation3
+
+devices:
+  UbuntuServer:
+    os: linux
+    type: linux
+    connections:
+      ssh:
+        class: lib.connectors.ssh_conn.SshConnection
+        protocol: ssh
+        ip: 192.168.200.1
+        port: 36
+        credentials:
+          login:
+            username: osboxes
+            password: osboxes.org
+#  RouterCSR:
+#    os: iosxe
+#    type: router
+#    custom:
+#      hostname: RouterCSR
+#      domain: cisco.com
+#    credentials:
+#      default:
+#        username: ionela
+#        password: ionela123
+#      enable:
+#        password: ionela123
+#    connections:
+#      telnet:
+#        class: lib.connectors.telnet_con.TelnetConnection
+#        protocol: telnet
+#        ip: 92.81.55.146  #192.168.200.10
+#        port: 5043 # 23
+#      ssh:
+#        class: lib.connectors.ssh_conn.SshConnection
+#        protocol: ssh
+#        ip: 192.168.200.30
+#        port: 22
+#      rest:
+#        class: lib.connectors.rest_con.RESTConnector
+#        protocol: ssh
+#        ip: 192.168.200.30
+#        port: 443
+#        credentials:
+#          login:
+#            username: ionela
+#            password: ionela123
+
+  FTD:
+    os: ftd
+    type: firewall
+    custom:
+      hostname: FTD
+      domain: cisco.com
+    credentials:
+      default:
+        username: ionela
+        password: Ionela@135
+      enable:
+        password: ionela123
+    connections:
+      telnet:
+        class: lib.connectors.telnet_con.TelnetConnection
+        protocol: telnet
+        ip: 92.81.55.146  #192.168.200.10
+        port: 5032 # 23
+      ssh:
+        class: lib.connectors.ssh_conn.SshConnection
+        protocol: ssh
+        ip: 192.168.200.40
+        port: 22
+      rest:
+        class: lib.connectors.rest_con.RESTConnector
+        protocol: https
+        ip: 192.168.200.40
+        port: 443
+        credentials:
+          login:
+            username: ionela
+            password: ionela123
+      swagger:
+        class: lib.connectors.swagger_con.SwaggerConnector
+        protocol: https
+        ip: 192.168.200.40
+        port: 443
+
+
+#  IOU1:
+#    os: ios
+#    type: router
+#    custom:
+#      hostname: IOU1
+#      domain: cisco.com
+#    credentials:
+#      default:
+#        username: ionela
+#        password: ionela123
+#    connections:
+#      telnet:
+#        class: lib.connectors.telnet_con.TelnetConnection
+#        protocol: telnet
+#        ip: 92.81.55.146  #192.168.200.10
+#        port: 5120 # 23
+#      ssh:
+#        class: lib.connectors.ssh_conn.SshConnection
+#        protocol: ssh
+#        ip: 192.168.200.10
+#        port: 36
+#
+#  Router:
+#    os: ios
+#    type: router
+#    custom:
+#      hostname: RouterIOSv
+#      domain: cisco.com
+#    credentials:
+#      default:
+#        username: ionela
+#        password: ionela123
+#      enable:
+#        password: ionela123
+#    connections:
+#      telnet:
+#        class: lib.connectors.telnet_con.TelnetConnection
+#        protocol: telnet
+#        ip: 92.81.55.146 #192.168.200.20
+#        port: 5121 #23
+#      ssh:
+#        class: lib.connectors.ssh_conn.SshConnection
+#        protocol: ssh
+#        ip: 192.168.200.20
+#        port: 36
+
+topology:
+  UbuntuServer:
+    interfaces:
+      ens4:
+        type: ethernet
+        link: management
+        ipv4: 192.168.200.1/24
+
+#  IOU1:
+#    interfaces:
+#      Ethernet0/0:
+#        alias: initial
+#        type: ethernet
+#        link: management
+#        ipv4: 192.168.200.10/24
+#      Ethernet0/1:
+#        type: ethernet
+#        link: guest1
+#        ipv4: 192.168.210.10/24
+#      Ethernet0/2:
+#          type: ethernet
+#          link: iou_iosv
+#          ipv4: 192.168.210.10/24
+#  RouterCSR:
+#    interfaces:
+#      GigabitEthernet1:
+#        type: ethernet
+#        link: management
+#        ipv4: 192.168.200.30/24
+#      GigabitEthernet2:
+#        type: ethernet
+#        link: csr_guest
+#        ipv4: 192.168.230.30/24
+#      GigabitEthernet3:
+#        type: ethernet
+#        link: csr_extra
+#        ipv4: 192.168.240.30/24
+
+  FTD:
+    interfaces:
+      Management1/1:
+        type: ethernet
+        link: management
+        ipv4: 192.168.200.40/24
+      Ethernet1/1:
+        type: ethernet
+        link: csr_ftd
+        ipv4: 192.168.240.40/24
+      Ethernet1/2:
+        type: ethernet
+        link: ftd_ubuntu
+        ipv4: 192.168.250.40/24
+
+#  Router:
+#    interfaces:
+#      GigabitEthernet0/0:
+#        alias: initial
+#        type: ethernet
+#        link: management
+#        ipv4: 192.168.200.20/24
+#      GigabitEthernet0/1:
+#        type: ethernet
+#        link: iou_iosv
+#        ipv4: 192.168.220.20/24
+#      GigabitEthernet0/2:
+#          type: ethernet
+#          link: iosv_csr
+#          ipv4: 192.168.230.20/24
