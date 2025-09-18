@@ -21,7 +21,7 @@ class ConfigureFDMManagement(aetest.Testcase):
     @aetest.test
     def bring_up_router_interface(self, steps):
         for device in self.tb.devices:
-            if self.tb.devices[device].type != 'ftd':
+            if self.tb.devices[device].type != 'firewall':
                 continue
             with steps.start(f'Bring up management interface {device}', continue_=True) as step:  # type: Step
 
@@ -38,101 +38,92 @@ class ConfigureFDMManagement(aetest.Testcase):
 
                     async def setup():
                         await conn.connect()
-                        await asyncio.sleep(1)
-
-                        conn.write("\n")
-                        await asyncio.sleep(2)
-                        out = await conn.read(n=2000)
+                        time.sleep(1)
+                        conn.write('')
+                        time.sleep(1)
+                        out = await conn.read(n=1000)
                         print(out)
-
                         result = re.search(r'^\s*(?P<login>firepower login:)', out)
                         if not result:
                             step.skipped(reason='Configuration not required')
 
-                        if result and result.group('login'):
-                            conn.write("admin\n")
-                            await asyncio.sleep(1)
-                            conn.write("Admin123\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
+                        if result.group('login'):
+                            conn.write('admin')
+                            time.sleep(0.1)
+                            conn.write('Admin123')
+                            time.sleep(1)
 
-                        # EULA
-                        if "EULA:" in out:
-                            conn.write("\n")
-                            await asyncio.sleep(1)
+                        out = await conn.read(n=1000)
+                        if 'EULA:' in out:
+                            conn.write('\r\n')
 
                             while True:
-                                out = await conn.read(n=2000)
-                                if "--More--" in out:
-                                    conn.write(" ")
-                                elif "AGREE" in out:
-                                    conn.write("YES\n")
-                                    await asyncio.sleep(1)
-                                    out = await conn.read(n=2000)
+                                time.sleep(1)
+                                out = await conn.read(n=1000)
+                                if '--More--' in out:
+                                    conn.write(' ')
+                                elif 'EULA:' in out:
+                                    conn.write('\r\n')
+                                    time.sleep(1)
+                                    out = await conn.read(n=1000)
                                     break
                                 else:
-                                    break
+                                    print('no str found in eula')
 
-                        # New password
-                        if "Enter new password:" in out:
-                            pw = self.tb.devices[device].credentials.default.password.plaintext
-                            conn.write(pw + "\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
+                        if 'password:' in out:
+                            conn.write(self.tb.devices[device].credentials.default.password.plaintext+'\n')
+                            time.sleep(1)
+                            out = await conn.read(n=1000)
+                            if 'password:' in out:
+                                   conn.write(self.tb.devices[device].credentials.default.password.plaintext+'\n')
+                                   time.sleep(1)
+                                   out = await conn.read(n=1000)
 
-                        if "Confirm new password:" in out:
-                            pw = self.tb.devices[device].credentials.default.password.plaintext
-                            conn.write(pw + "\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
+                        if 'IPv4? (y/n) [y]:' in out:
+                            conn.write('')
+                            time.sleep(1)
+                            out = await conn.read(n=1000)
 
-                        # IPv4
-                        if "IPv4? (y/n) [y]:" in out:
-                            conn.write("\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
+                        if 'IPv6? (y/n) [n]:' in out:
+                            conn.write('')
+                            time.sleep(1)
+                            out = await conn.read(n=1000)
 
-                        if "IPv6? (y/n) [n]:" in out:
-                            conn.write("\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
+                        if '[manual]:' in out:
+                            conn.write('')
+                            time.sleep(1)
+                            out = await conn.read(n=1000)
 
-                        if "(dhcp/manual) [manual]:" in out:
-                            conn.write("\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
+                        if '[192.168.45.45]:' in out:
+                            conn.write(intf_obj.ipv4.ip.compressed)
+                            time.sleep(1)
+                            out = await conn.read(n=1000)
 
-                        if "Enter an IPv4 address" in out:
-                            conn.write(intf_obj.ipv4.ip.compressed + "\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
+                        if '[255.255.255.0]:' in out:
+                            conn.write(intf_obj.ipv4.netmask.exploded)
+                            time.sleep(1)
+                            out = await conn.read(n=1000)
 
-                        if "Enter an IPv4 netmask" in out:
-                            conn.write(intf_obj.ipv4.netmask.exploded + "\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
+                        if '[192.168.45.1]:' in out:
+                            conn.write((intf_obj.ipv4.ip + 1).compressed)
+                            time.sleep(1)
+                            out = await conn.read(n=1000)
 
-                        if "default gateway" in out:
-                            conn.write((intf_obj.ipv4.ip + 1).compressed + "\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
+                        if '::35]:' in out:
+                            conn.write('')
+                            time.sleep(1)
+                            out = await conn.read(n=1000)
 
-                        if "DNS servers" in out:
-                            conn.write("\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
-
-                        if "search domains" in out:
-                            conn.write("\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
+                        if "'none' []:" in out:
+                            conn.write('')
+                            time.sleep(1)
+                            out = await conn.read(n=1000)
 
                         if "locally? (yes/no) [yes]:" in out:
-                            conn.write("\n")
-                            await asyncio.sleep(1)
-                            out = await conn.read(n=2000)
+                            conn.write('')
+                            time.sleep(1)
+                            out = await conn.read(n=1000)
 
-                        print("Final output:", out)
 
                     asyncio.run(setup())
 
