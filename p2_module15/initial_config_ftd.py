@@ -8,7 +8,7 @@ from pyats import aetest, topology
 from pyats.aetest.steps import Step
 
 from p2_module12 import ssh_config
-from lib.connectors.telnet_con_m15  import TelnetConnection
+from lib.connectors.telnet_con_m15 import TelnetConnection
 
 print(sys.path)
 
@@ -40,6 +40,7 @@ class ConfigureFTDManagement(aetest.Testcase):
                     ip = self.tb.devices[device].connections.telnet.ip.compressed
                     port = self.tb.devices[device].connections.telnet.port
                     conn: TelnetConnection = conn_class(ip, port)
+                    #print(self.tb.devices[device].credentials.default.password.plaintext)
 
                     async def setup():
                         await conn.connect()
@@ -76,11 +77,11 @@ class ConfigureFTDManagement(aetest.Testcase):
                                     print('No string found in output')
 
                         if 'password:' in out:
-                            conn.write(self.tb.devices[device].connections.telnet.credentials.default.password.plaintext)
+                            conn.write(self.tb.devices[device].credentials.default.password.plaintext)
                             await asyncio.sleep(1)
                             out = await conn.read(n=1000)
                             if 'password:' in out:
-                                conn.write(self.tb.devices[device].connections.telnet.credentials.default.password.plaintext)
+                                conn.write(self.tb.devices[device].credentials.default.password.plaintext)
                                 await asyncio.sleep(2)
                                 out = await conn.read(n=1000)
 

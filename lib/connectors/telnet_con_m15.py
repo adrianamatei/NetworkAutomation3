@@ -5,7 +5,7 @@ from queue import Queue
 import telnetlib3
 
 HOST = '92.81.55.146'
-PORT = 5917 # replace with yours
+PORT = 5120 # replace with yours
 
 class TelnetConnection:
     def _init_(self, host, port):
@@ -32,31 +32,13 @@ class TelnetConnection:
     def write(self, data: str):
         self.writer.write(data + '\n')
 
-    async def execute_commends(self, command: list, prompt: str):
-        for cmd in command:
-            self.write(cmd)
-            await self.readuntil(prompt)
+    def _exit_(self, exc_type, exc_val, exc_tb):
+        self.write('\n')
 
-    # async def configure(self, completed: Queue = None):
-    #     self.write('')
-    #     await asyncio.sleep(2)
-    #     result = await self.read(3000)
-    #     if 'Router#' in result:
-    #         self.write('conf t')
-    #         await self.readuntil('Router(config)#')
-    #         self.write('interface g0/0')
-    #         await self.readuntil('Router(config-if)#')
-    #         self.write('ip address 192.168.200.3 255.255.255.0')
-    #         await self.readuntil('Router(config-if)#')
-    #         self.write('no shutdown')
-    #         await self.readuntil('Router(config-if)#')
-    #         completed.put({"Router": "192.168.200.3"})
-    #
-    #     elif 'IOU1#' in result:
-    #         self.write('conf t')
-    #
-    # def _exit_(self, exc_type, exc_val, exc_tb):
-    #     self.write('\r\n')
+    async def execute_commands(self, command: list, prompt: str):
+        for cmd in command:
+            self.write(cmd + '\n')
+            await self.readuntil(prompt)
 
 if __name__ == '__main__':
     conn = TelnetConnection(HOST, PORT)
