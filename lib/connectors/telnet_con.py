@@ -5,7 +5,7 @@ from queue import Queue
 import telnetlib3
 
 HOST = '92.81.55.146'
-PORT = 5120  # replace with yours
+PORT = 5009  # replace with yours
 
 class TelnetConnection:
     def __init__(self, host, port):

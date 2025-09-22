@@ -111,7 +111,7 @@ class ConfigureFDMManagement(aetest.Testcase):
                             time.sleep(5)
                             out = await conn.read(n=1000)
 
-                        if ['firepower:'] in out:
+                        if 'firepower:' in out:
                             conn.writer.write(self.tb.devices[device].custom.hostname+'\n')
                             time.sleep(5)
                             out = await conn.read(n=1000)
