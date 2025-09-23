@@ -4,5 +4,5 @@ import sys
 print(sys.path)
 
 
-args = [ '--rcfile=pylintrc', 'configure_ftd_int_experiment.py']
+args = [ '--rcfile=pylintrc', 'tema2_problema1.py']
 pylint.run_pylint(args)

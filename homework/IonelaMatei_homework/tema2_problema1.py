@@ -22,7 +22,9 @@ def read_switch():
         "speed": speed,
         "adresa_ip": adresa_ip
     }
+
 def read_router():
+
     name = input("Nume router: ")
     ports = input("Numar porturi: ")
     interfaces = []
