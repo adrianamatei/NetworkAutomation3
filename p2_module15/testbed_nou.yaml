@@ -6,7 +6,7 @@ devices:
       domain: example.com
     credentials:
       default:
-        username: ionela
+        username: admin
         password: Ionela@123
       enable:
         password: ionela123

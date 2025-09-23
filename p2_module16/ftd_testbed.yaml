@@ -56,7 +56,7 @@ devices:
       domain: cisco.com
     credentials:
       default:
-        username: ionela
+        username: admin
         password: Ionela@135
       enable:
         password: ionela123
@@ -65,7 +65,7 @@ devices:
         class: lib.connectors.telnet_con.TelnetConnection
         protocol: telnet
         ip: 92.81.55.146  #192.168.200.10
-        port: 5009 # 23
+        port: 5022 # 23
       ssh:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh

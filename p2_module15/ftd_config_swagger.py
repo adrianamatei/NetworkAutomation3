@@ -17,7 +17,7 @@ class ConnectFTDREST(aetest.Testcase):
                     continue
                 if "swagger" not in self.tb.devices[device].connections:
                     continue
-                connection = self.tb.devices[device].connect()
+                connection = self.tb.devices[device].connect(via='swagger')
                 # print(connection)
                 swagger = connection.get_swagger_client()
                 print(swagger)

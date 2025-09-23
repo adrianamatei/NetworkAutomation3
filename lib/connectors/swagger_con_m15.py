@@ -1,6 +1,5 @@
-
 import json
-
+import time
 import requests
 from bravado.client import SwaggerClient
 from pyats.topology import Device
@@ -36,22 +35,38 @@ class SwaggerConnector:
 
     def __login(self):
         endpoint = '/api/fdm/latest/fdm/token'
-        response = requests.post(
-            url=self._url + endpoint,
-            headers=self._headers,
-            verify=False,
-            data=json.dumps(
-                {
-                    'username': self.device.credentials.default.username,
-                    'password': self.device.credentials.default.password.plaintext,
-                    'grant_type': 'password',
-                }
+        username = self.device.credentials.default.username
+        password = self.device.credentials.default.password.plaintext
+
+
+        for attempt in range(7):
+            response = requests.post(
+                url=self._url + endpoint,
+                headers=self._headers,
+                verify=False,
+                data=json.dumps(
+                    {
+                        'username': username,
+                        'password': password,
+                        'grant_type': 'password',
+                    }
+                )
             )
-        )
-        self.__access_token = response.json()['access_token']
-        self.__refresh_token = response.json()['refresh_token']
-        self.__token_type = response.json()['token_type']
-        self._headers.update({'Authorization': f'{self.__token_type} {self.__access_token}'})
+
+            if response.status_code == 200:
+                tokens = response.json()
+                self.__access_token = tokens['access_token']
+                self.__refresh_token = tokens['refresh_token']
+                self.__token_type = tokens['token_type']
+                self._headers.update(
+                    {'Authorization': f'{self._token_type} {self._access_token}'}
+                )
+                return
+
+            print(f"[Login attempt {attempt+1}] failed: {response.status_code} {response.text}")
+            time.sleep(4)  # mic delay înainte de retry
+
+        raise Exception("Failed to authenticate after 3 attempts")
 
     def get_swagger_client(self):
         endpoint = '/apispec/ngfw.json'

@@ -6,7 +6,7 @@ import time
 from pyats import aetest, topology
 from pyats.aetest.steps import Step
 
-from lib.connectors.telnet_con import TelnetConnection
+from lib.connectors.telnet_con_m15 import TelnetConnection
 
 print(sys.path)
 
@@ -111,7 +111,7 @@ class ConfigureFDMManagement(aetest.Testcase):
                             time.sleep(5)
                             out = await conn.read(n=1000)
 
-                        if 'firepower:' in out:
+                        if 'hostname' in out:
                             conn.writer.write(self.tb.devices[device].custom.hostname+'\n')
                             time.sleep(5)
                             out = await conn.read(n=1000)
@@ -129,9 +129,8 @@ class ConfigureFDMManagement(aetest.Testcase):
 
                         if "locally? (yes/no) [yes]:" in out:
                             conn.writer.write('\n')
-                            time.sleep(10)
+                            time.sleep(5)
                             out = await conn.read(n=1000)
-
 
                     asyncio.run(setup())
 
