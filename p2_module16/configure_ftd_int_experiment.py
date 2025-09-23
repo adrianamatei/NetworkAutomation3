@@ -30,23 +30,21 @@ class ConnectFTDREST(aetest.Testcase):
                 if "swagger" not in tb.devices[device].connections:
                     continue
                 connection: SwaggerConnector = tb.devices[device].connect(via='swagger')
-                # print(connection)
                 swagger = connection.get_swagger_client()
                 if not swagger:
                     self.failed('No swagger connection')
                 print(swagger)
 
-
         with steps.start("Delete existing DHCP server"):
-                dhcp_servers = swagger.DHCPServerContainer.getDHCPServerContainerList().result()
-                for dhcp_server in dhcp_servers['items']:
+                 dhcp_servers = swagger.DHCPServerContainer.getDHCPServerContainerList().result()
+                 for dhcp_server in dhcp_servers['items']:
                     dhcp_serv_list = dhcp_server['servers']
                     print(dhcp_serv_list)
                     dhcp_server.servers = []
                     response = swagger.DHCPServerContainer.editDHCPServerContainer(
-                        objId=dhcp_server.id,
-                        body=dhcp_server,
-                    ).result()
+                         objId=dhcp_server.id,
+                         body=dhcp_server,
+                     ).result()
                     print(response)
 
         with steps.start('Configure FTD Interfaces'):
@@ -54,8 +52,15 @@ class ConnectFTDREST(aetest.Testcase):
             csr_ftd = connection.device.interfaces['csr_ftd']
             ftd_ep2 = connection.device.interfaces['ftd_ep2']
             interface_for_dhcp = None
+
+            print("=== Existing interfaces from FTD ===")
             for interface in existing_interfaces['items']:
-                if interface.hardwareName == csr_ftd.alias:
+                print(f"hardwareName={interface.hardwareName}, "
+                      f"name={interface.name}, id={interface.id}")
+
+            for interface in existing_interfaces['items']:
+                # match pentru csr_ftd
+                if interface.hardwareName.lower() in csr_ftd.name.lower():
                     interface.ipv4.ipAddress.ipAddress = csr_ftd.ipv4.ip.compressed
                     interface.ipv4.ipAddress.netmask = csr_ftd.ipv4.netmask.exploded
                     interface.ipv4.dhcp = False
@@ -66,8 +71,10 @@ class ConnectFTDREST(aetest.Testcase):
                         objId=interface.id,
                         body=interface,
                     ).result()
-                    print(response)
-                if interface.hardwareName == ftd_ep2.alias:
+                    print("Configured csr_ftd:", response)
+
+                # match pentru ftd_ep2
+                if interface.hardwareName.lower() in ftd_ep2.name.lower():
                     interface.ipv4.ipAddress.ipAddress = ftd_ep2.ipv4.ip.compressed
                     interface.ipv4.ipAddress.netmask = ftd_ep2.ipv4.netmask.exploded
                     interface.ipv4.dhcp = False
@@ -79,15 +86,24 @@ class ConnectFTDREST(aetest.Testcase):
                         body=interface,
                     ).result()
                     interface_for_dhcp = interface
-                    print(response)
+                    print("Configured ftd_ep2:", response)
+
+            if not interface_for_dhcp:
+                self.failed(
+                    f"Nu am găsit interfața pentru DHCP. "
+                    f"Testbed: {ftd_ep2.name}, "
+                    f"Disponibile: {[i.hardwareName for i in existing_interfaces['items']]}"
+                )
 
         with steps.start("Add DHCP server to interface"):
             dhcp_servers = swagger.DHCPServerContainer.getDHCPServerContainerList().result()
             for dhcp_server in dhcp_servers['items']:
                 dhcp_serv_list = dhcp_server['servers']
-                print(dhcp_serv_list)
+                print("Existing DHCP servers:", dhcp_serv_list)
+
                 dhcp_server_model = swagger.get_model('DHCPServer')
                 interface_ref_model = swagger.get_model('ReferenceModel')
+
                 dhcp_server.servers = [
                     dhcp_server_model(
                         addressPool='192.168.250.50-192.168.250.100',
@@ -100,11 +116,12 @@ class ConnectFTDREST(aetest.Testcase):
                         type='dhcpserver'
                     )
                 ]
+
                 response = swagger.DHCPServerContainer.editDHCPServerContainer(
                     objId=dhcp_server.id,
                     body=dhcp_server,
                 ).result()
-                print(response)
+                print("Configured DHCP server:", response)
 
         with steps.start("Add routes"):
             pass
