@@ -1,0 +1,10 @@
+- name: Add static route to IOS device
+  host: ios.router1
+  gather_facts: no
+
+  tasks:
+   - name: Cisco configure route
+     where: ansible_networks_os =='cisco.ios'
+     cisco.ios.ios_config:
+       lines:
+         -show version

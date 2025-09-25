@@ -1,0 +1,1 @@
+ansible-playbook -i inventory.ini add_static_route.yaml --ask-vault-pass
