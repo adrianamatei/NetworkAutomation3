@@ -41,3 +41,4 @@ print(True * "2")
 # special cases
 print(True and False)
 print('' and 'b')
+print((-7).bit_length())

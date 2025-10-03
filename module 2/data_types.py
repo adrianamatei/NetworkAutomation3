@@ -31,3 +31,5 @@ print(type(var7))
 print(var7)
 
 
+var6={'':2}
+print(var6)

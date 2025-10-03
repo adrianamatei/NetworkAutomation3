@@ -65,7 +65,7 @@ devices:
         class: lib.connectors.telnet_con.TelnetConnection
         protocol: telnet
         ip: 92.81.55.146  #192.168.200.10
-        port: 5022 # 23
+        port: 5025 # 23
       ssh:
         class: lib.connectors.ssh_conn.SshConnection
         protocol: ssh

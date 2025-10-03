@@ -177,13 +177,13 @@ topology:
         type: ethernet
         link: management
         ipv4: 192.168.200.40/24
-      GigabitEthernet0/0:
+      GigabitEthernet0/1:
       #Ethernet1/1:
         type: ethernet
         link: csr_ftd
         alias: csr_ftd
         ipv4: 192.168.240.40/24
-      GigabitEthernet0/1:
+      GigabitEthernet0/2:
       #Ethernet1/2:
         type: ethernet
         link: ftd_ep2

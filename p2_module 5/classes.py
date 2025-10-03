@@ -51,3 +51,4 @@ car.drive() # echivalent cu Car.drive(car)
 #inseamna practic ca se share uie locatia de memorie intre instantele clasei
 
 
+print(id(car))
